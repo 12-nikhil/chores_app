@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "398410125608",
+    "project_id": "choresapp-cdc21",
+    "storage_bucket": "choresapp-cdc21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398410125608:android:f71aef5e8ebfa321be401d",
+        "android_client_info": {
+          "package_name": "softwise.mechatronics.chores_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398410125608-5a5brgo840vglr70afg2302oqqlou3hn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChBg4jUBGcyR6lAVImiE36ui3efsUw21M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398410125608-5a5brgo840vglr70afg2302oqqlou3hn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

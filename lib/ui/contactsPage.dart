@@ -43,11 +43,11 @@ class _ContactsPageState extends State<ContactsPage> {
     //We already have permissions for contact when we get to this page, so we
     // are now just retrieving it
     final Iterable<Contact> contacts = await ContactsService.getContacts();
-    var contactList = await ContactsService.getContacts();
+    //var contactList = await ContactsService.getContacts();
     setState(() {
       _contacts = contacts;
     });
-    _populateContacts(contactList);
+    _populateContacts(contacts);
   }
 
   void _populateContacts(Iterable<Contact> contacts) {

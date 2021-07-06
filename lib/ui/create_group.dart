@@ -48,12 +48,11 @@ class _CreateGroupState extends State<CreateGroup> {
           "Content-Type": "application/json",
         }).timeout(new Duration(seconds: 30));
         try {
-          Navigator.pop(context);
+          Navigator.pop(context);  //  pop dialog box .
           if (response != null && response.statusCode == 200) {
             MyGroup group = MyGroup.fromJson(json.decode(response.body));
             if (group != null) {
-              saveGroupDataInSharedPreference(group.groupId.toString(),
-                  group.userId, group.role, groupName);
+              saveGroupDataInSharedPreference(group.groupId.toString(), group.userId, group.role, groupName); // save to shared preference
               saveLoginDataInLocal(context, group);
               saveGroupDataInLocal(context, group);
             }
@@ -101,7 +100,7 @@ class _CreateGroupState extends State<CreateGroup> {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
             builder: (context) => GroupMembers(
-                  callingFrom: "C",
+                  callingFrom: "C",         //calling type
                 )),
         (Route<dynamic> route) => false);
   }

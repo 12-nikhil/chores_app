@@ -367,6 +367,7 @@ class _MainDashboardScreenState extends State<MainDashboardScreen> {
           backgroundColor: Colors.green,
           selectedItemColor: Colors.blue,
           onTap: (index) => setPageIndex(index),
+
           items: [
             new BottomNavigationBarItem(
               icon: Icon(

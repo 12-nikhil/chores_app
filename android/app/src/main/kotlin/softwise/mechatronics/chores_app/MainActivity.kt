@@ -15,8 +15,8 @@ import io.flutter.view.FlutterMain
 
 class MainActivity : FlutterActivity(), PluginRegistry.PluginRegistrantCallback {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        /*FlutterFirebaseMessagingBackgroundService.setPluginRegistrant(this)
-        FlutterFirebaseMessagingBackgroundExecutor.setPluginRegistrant(this)*/
+//        FlutterFirebaseMessagingBackgroundService.setPluginRegistrant(this)
+//        FlutterFirebaseMessagingBackgroundExecutor.setPluginRegistrant(this)
         //this.getFlutterEngine()?.let { GeneratedPluginRegistrant.registerWith(it) }
 
 
@@ -25,8 +25,8 @@ class MainActivity : FlutterActivity(), PluginRegistry.PluginRegistrantCallback 
     override
     fun registerWith(registry: PluginRegistry) {
         PathProviderPlugin.registerWith(registry.registrarFor("io.flutter.plugins.pathprovider.PathProviderPlugin"))
-        //FlutterLocalNotificationsPlugin.registerWith(registry.registrarFor("com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin"))
-        //FlutterFirebaseMessagingPlugin.registerWith(registry.registrarFor("plugins.flutter.io/firebase_messaging"))
+        FlutterLocalNotificationsPlugin.registerWith(registry.registrarFor("com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin"))
+       // FlutterFirebaseMessagingPlugin.registerWith(registry.registrarFor("plugins.flutter.io/firebase_messaging"))
 
     }
 

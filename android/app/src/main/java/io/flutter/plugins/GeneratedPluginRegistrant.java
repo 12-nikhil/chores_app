@@ -16,9 +16,9 @@ public final class GeneratedPluginRegistrant {
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
     ShimPluginRegistry shimPluginRegistry = new ShimPluginRegistry(flutterEngine);
     flutterEngine.getPlugins().add(new io.flutter.plugins.connectivity.ConnectivityPlugin());
-      flutter.plugins.contactsservice.contactsservice.ContactsServicePlugin.registerWith(shimPluginRegistry.registrarFor("flutter.plugins.contactsservice.contactsservice.ContactsServicePlugin"));
+    flutterEngine.getPlugins().add(new flutter.plugins.contactsservice.contactsservice.ContactsServicePlugin());
     flutterEngine.getPlugins().add(new io.flutter.plugins.firebase.core.FlutterFirebaseCorePlugin());
-    flutterEngine.getPlugins().add(new io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin());
+    flutterEngine.getPlugins().add(new io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingPlugin());
       dev.bughub.flt_telephony_info.FltTelephonyInfoPlugin.registerWith(shimPluginRegistry.registrarFor("dev.bughub.flt_telephony_info.FltTelephonyInfoPlugin"));
     flutterEngine.getPlugins().add(new com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin());
       io.github.ponnamkarthik.toast.fluttertoast.FluttertoastPlugin.registerWith(shimPluginRegistry.registrarFor("io.github.ponnamkarthik.toast.fluttertoast.FluttertoastPlugin"));

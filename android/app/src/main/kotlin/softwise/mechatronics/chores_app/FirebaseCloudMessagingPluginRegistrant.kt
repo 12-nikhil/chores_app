@@ -2,16 +2,18 @@ package softwise.mechatronics.chores_app
 
 import com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin
 import io.flutter.plugin.common.PluginRegistry
-import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin
+//import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin
 
-class FirebaseCloudMessagingPluginRegistrant {
-    companion object {
+object FirebaseCloudMessagingPluginRegistrant {
+
         fun registerWith(registry: PluginRegistry) {
             if (alreadyRegisteredWith(registry)) {
                 return;
             }
-            FirebaseMessagingPlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin"))
+            FirebaseCloudMessagingPluginRegistrant.registerWith(registry);
+            //FirebaseMessagingPlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin"))
             FlutterLocalNotificationsPlugin.registerWith(registry.registrarFor("com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin"));
+            //registerWith(pluginRegistry)
         }
 
         fun alreadyRegisteredWith(registry: PluginRegistry): Boolean {
@@ -22,5 +24,5 @@ class FirebaseCloudMessagingPluginRegistrant {
             registry.registrarFor(key)
             return false
         }
-    }
+
 }

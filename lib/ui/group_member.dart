@@ -61,7 +61,10 @@ class _GroupMembersState extends State<GroupMembers> {
 
   //Check contacts permission
   Future<PermissionStatus> _getPermission() async {
+
+    await Permission.contacts.request();
     final PermissionStatus permission = await Permission.contacts.status;
+
     if (permission != PermissionStatus.granted &&
         permission != PermissionStatus.denied) {
       final Map<Permission, PermissionStatus> permissionStatus =

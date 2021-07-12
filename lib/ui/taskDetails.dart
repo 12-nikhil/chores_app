@@ -90,6 +90,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
       var response = await sendTaskStatusOnServer(taskNotificationBody);
 
       if (response != null) {
+        print('ok $response');
         setState(() {
           _isSubmitButtonVisible = false;
         });
@@ -489,7 +490,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                             saveStatusOnServer(
                                 widget.taskMember.taskId,
                                 widget.taskMember.memberId,
-                                REJECT,
+                                //REJECT,
+                                PENDING,  // this line for set back status to pending
                                 0,
                                 widget.taskMember.groupId);
                           },

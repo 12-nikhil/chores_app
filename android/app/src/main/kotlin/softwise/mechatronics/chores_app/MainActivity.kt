@@ -9,7 +9,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.GeneratedPluginRegistrant
-import io.flutter.plugins.firebasemessaging.FlutterFirebaseMessagingService
+//import io.flutter.plugins.firebasemessaging.FlutterFirebaseMessagingService
 import io.flutter.plugins.pathprovider.PathProviderPlugin
 import io.flutter.view.FlutterMain
 
@@ -26,7 +26,8 @@ class MainActivity : FlutterActivity(), PluginRegistry.PluginRegistrantCallback 
     fun registerWith(registry: PluginRegistry) {
         PathProviderPlugin.registerWith(registry.registrarFor("io.flutter.plugins.pathprovider.PathProviderPlugin"))
         FlutterLocalNotificationsPlugin.registerWith(registry.registrarFor("com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin"))
-       // FlutterFirebaseMessagingPlugin.registerWith(registry.registrarFor("plugins.flutter.io/firebase_messaging"))
+
+        //FlutterFirebaseMessagingPlugin.registerWith(registry.registrarFor("plugins.flutter.io/firebase_messaging"))
 
     }
 

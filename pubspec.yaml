@@ -28,14 +28,14 @@ dependencies:
   flutter:
     sdk: flutter
   flt_telephony_info: any
-  permission_handler: ^5.0.0
+  permission_handler: ^8.1.2
   #permission_handler: ^6.1.0
 
   #permission_handler_platform_interface: ^3.1.0  # extra
   #shared_preferences: '0.5.12+4'
   #shared_preferences: ^2.0.5
   #shared_preferences: ^2.0.4
-  contacts_service: ^0.3.10
+  contacts_service: ^0.6.1
   http: ^0.12.0
   connectivity: ^3.0.6
   fluttertoast: ^3.1.0
@@ -43,8 +43,8 @@ dependencies:
   path_provider: ^0.5.0+1
   flutter_local_notifications: ^5.0.0-nullsafety.0
   #flutter_local_notifications: ^0.7.1+1
-  firebase_messaging: ^7.0.3
-  firebase_core:
+  firebase_messaging: ^10.0.0
+  firebase_core: ^1.3.0
   #firebase_analytics:
   #firebase_core_platform_interface: ^4.0.0 # extra
   #plugin_platform_interface: ^2.0.0 # extra

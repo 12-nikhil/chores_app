@@ -44,9 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
               await SharedPreferences.getInstance();
           sharedPreferences.setString(SP_MOBILE, mobile);
           print("subscription ${mobile.replaceAll("+", "").trim()}");
-          // MyHomePage()
-          //     .createState()
-          //     .subscribeTopic(mobile.replaceAll("+", "").trim());
+          MyHomePage()
+              .createState()
+              .subscribeTopic(mobile.replaceAll("+", "").trim());
           showAlertDialog(context, MSG_TITLE_CONGRATULATION, serverResponse);
         } else {
           showAlertDialog(context, MSG_TITLE_MESSAGE, serverResponse);

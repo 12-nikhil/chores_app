@@ -16,8 +16,10 @@ import 'package:chores_app/ui/splash_screen.dart';
 import 'package:chores_app/utils/Utils.dart';
 import 'package:chores_app/utils/chores_constant.dart';
 import 'package:cron/cron.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -31,24 +33,30 @@ import 'package:chores_app/models/notificationBody/NotificationTaskRecurringIDs.
 * This is FCM background message handler
 * it called when app is in background or killed or process kill
 * */
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  /* It clear shared preference ayt background and set default values*/
-  SharedPreferences.setMockInitialValues({});
-  if (message.containsKey('data')) {
-   // MyHomePage().createState().displayNotification(message);
-  }
-}
+// Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+//   /* It clear shared preference ayt background and set default values*/
+//   SharedPreferences.setMockInitialValues({});
+//   if (message.containsKey('data')) {
+//    // MyHomePage().createState().displayNotification(message);
+//   }
+// }
+
 /* I am using the wrong approach
 * cause cron only run when app is in foreground
 * when app goes in background or kill this code will not work
 * But it works*/
+
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("in app kill ");
+  print("Handling a background message: ${message.messageId}");
+  MyHomePage().createState().displayNotification(message);
+
+}
+
+
 Future<void> main() async {
-  /* it schedule notification at every morning at 7:00 AM*/
-  final cron = Cron();
-  // cron.schedule(Schedule.parse('sec min hours days months weekdays'), () async {
-  cron.schedule(Schedule.parse('0 0 7 * * *'), () async {
-    //().createState().getTaskFromLocalDB();
-  });
+
   runApp(MyApp());
 }
 
@@ -70,6 +78,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
@@ -79,68 +88,174 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
+
+  FirebaseMessaging _messaging;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+
   var uId;
   var loginRole;
   var gpName;
+
+  void registerNotification() async {
+    await Firebase.initializeApp();
+    _messaging = FirebaseMessaging.instance;
+
+    var initializationSettingsAndroid =
+      new AndroidInitializationSettings('@mipmap/ic_launcher');
+
+      var initializationSettingsIOS = new IOSInitializationSettings(
+          onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+
+      var initializationSettings = new InitializationSettings(
+          android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: onSelectNotification);
+
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // print(
+        //     'Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
+
+        print("in foreground");
+        print(' onMsg  ${message.data['body']}');
+        print(' onMsg  ${message.data['title']}');
+
+        // Map<String,dynamic> temp = new Map<String,dynamic>();
+        //
+        // temp['body']=message.data['body'];
+        // temp['title']=message.data['title'];
+        // temp['clickaction']=message.data['clickaction'];
+        // print("in temp ${temp['body']} and ${temp['title']}");
+
+        displayNotification(message);
+
+
+      });
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+
+  // For handling notification when the app is in terminated state
+  checkForInitialMessage() async {
+    await Firebase.initializeApp();
+    var initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+
+      displayNotification(initialMessage);
+    }
+  }
+
+
 
 
   @override
   initState() {
     // TODO: implement initState
+
+    registerNotification();
+    checkForInitialMessage();
+
+
+
+
+    // For handling notification when the app is in background
+    // but not terminated
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+      //displayNotification(message);
+      // print(
+      //     'Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
+      //
+
+      print("in background");
+      print(' onMsgOpenApp  ${message.toString()}');
+      displayNotification(message);
+
+    });
+
     super.initState();
-    //getTaskFromLocalDB();
-    FCMConfigurationForMessage();
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('Got a message whilst in the foreground!');
+    //   print('Message data: ${message.data}');
+    //
+    //   if (message.notification != null) {
+    //     print('Message also contained a notification: ${message.notification}');
+    //   }
+    // });
+    //
+    // FirebaseMessaging.onMessageOpenedApp.listen((event) {
+    //   print('Message open app: ${event.data}');
+    // });
+
   }
+
+
+
   /*
   * Set Firebase FCM - for Android And iOs
   *
   * */
   // ignore: non_constant_identifier_names
-  Future<void> FCMConfigurationForMessage()async
-  {
-    var initializationSettingsAndroid =
-    new AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    var initializationSettingsIOS = new IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-
-    var initializationSettings = new InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-
-    _firebaseMessaging.configure(
-      //When the app is open and it receives a push notification
-      // ignore: missing_return
-      onMessage: (Map<String, dynamic> message) {
-        displayNotification(message);
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-
-      // When the app is in the background and opened directly from the push notification.
-      // ignore: missing_return
-      onResume: (Map<String, dynamic> message) {
-        displayNotification(message);
-      },
-      // When the app is completely closed (not in the background) and opened directly from the push notification
-      // ignore: missing_return
-      onLaunch: (Map<String, dynamic> message) {
-        displayNotification(message);
-      },
-    );
-
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-
-    // for iOs setting
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-    });
-  }
+  // Future<void> FCMConfigurationForMessage()async
+  // {
+  //   var initializationSettingsAndroid =
+  //   new AndroidInitializationSettings('@mipmap/ic_launcher');
+  //
+  //   var initializationSettingsIOS = new IOSInitializationSettings(
+  //       onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+  //
+  //   var initializationSettings = new InitializationSettings(
+  //       android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+  //
+  //   flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  //       onSelectNotification: onSelectNotification);
+  //
+  //   _firebaseMessaging.configure(
+  //     //When the app is open and it receives a push notification
+  //     // ignore: missing_return
+  //     onMessage: (Map<String, dynamic> message) {
+  //       displayNotification(message);
+  //     },
+  //     onBackgroundMessage: myBackgroundMessageHandler,
+  //
+  //     // When the app is in the background and opened directly from the push notification.
+  //     // ignore: missing_return
+  //     onResume: (Map<String, dynamic> message) {
+  //       displayNotification(message);
+  //     },
+  //     // When the app is completely closed (not in the background) and opened directly from the push notification
+  //     // ignore: missing_return
+  //     onLaunch: (Map<String, dynamic> message) {
+  //       displayNotification(message);
+  //     },
+  //   );
+  //
+  //   _firebaseMessaging.requestNotificationPermissions(
+  //       const IosNotificationSettings(sound: true, badge: true, alert: true));
+  //
+  //   // for iOs setting
+  //   _firebaseMessaging.onIosSettingsRegistered
+  //       .listen((IosNotificationSettings settings) {
+  //   });
+  // }
 
   Future<void> scheduledTestNotification(
       NotificationTaskReceived taskReceived, DateTime date) async {
@@ -173,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> cancelReminderNotification(int notificationId) async {
     if (flutterLocalNotificationsPlugin == null) {
-      flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+     // flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     }
     await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
@@ -224,16 +339,25 @@ class _MyHomePageState extends State<MyHomePage> {
   /* Subscribe topic for FCM Notifications
   * this method is called when login successful*/
   Future<void> subscribeTopic(String mobile) async {
-    _firebaseMessaging.subscribeToTopic(mobile);
+    await FirebaseMessaging.instance.subscribeToTopic(mobile);    //old line  _firebaseMessaging.subscribeToTopic(mobile);
   }
   /* Unsubscribe topic for FCM Notifications
   * this method is called when user remove or account remove by admin*/
   Future<void> unSubscribeTopic(String mobile) async {
-    _firebaseMessaging.unsubscribeFromTopic(mobile);
+    await FirebaseMessaging.instance.unsubscribeFromTopic(mobile); // old line _firebaseMessaging.unsubscribeFromTopic(mobile);
   }
 
-  Future displayNotification(Map<String, dynamic> message) async {
-    var title = message['data']['title'] ?? '';
+  Future displayNotification(RemoteMessage temp) async {
+
+    Map<String,dynamic> message = new Map<String,dynamic>();
+
+    message['body']=temp.data['body'];
+    message['title']=temp.data['title'];
+    message['clickaction']=temp.data['clickaction'];
+
+
+
+    var title = message['title'] ?? '';
     SharedPreferences sp = await SharedPreferences.getInstance();
     uId = await sp.getInt(SP_USER_ID) ?? 0;
     loginRole = await sp.getString(SP_ROLE) ?? null;
@@ -257,8 +381,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void viewNotification(
       Map<String, dynamic> message, int uId, String loginRole) {
-    final title = message['data']['title'] ?? '';
-    final body = message['data']['body'] ?? '';
+    final title = message['title'] ?? '';
+    final body = message['body'] ?? '';
     String notificationTitle;
     switch (title) {
       case "1":
@@ -398,10 +522,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future showNotification(
-      Map<String, dynamic> message, String notificationTitle) async {
-    final body = message['data']['body'] ?? '';
-    final title = message['data']['title'] ?? '';
+  Future showNotification(Map<String, dynamic> message, String notificationTitle) async {
+
+    print('yes');
+
+    final body = message['body'] ?? '';
+    final title = message['title'] ?? '';
     String bodyTitle = body + "@" + title;
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       NOTIFICATION_CHANNEL_ID,
@@ -415,6 +541,8 @@ class _MyHomePageState extends State<MyHomePage> {
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
 
+    print('yes');
+
     await flutterLocalNotificationsPlugin.show(
       0,
       APP_NAME,
@@ -422,6 +550,7 @@ class _MyHomePageState extends State<MyHomePage> {
       platformChannelSpecifics,
       payload: bodyTitle,
     );
+    print('yes');
   }
 
   Future onSelectNotification(var payload) async {

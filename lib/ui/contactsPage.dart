@@ -10,6 +10,7 @@ import 'package:chores_app/ui/main_dashboard_screen.dart';
 import 'package:chores_app/utils/chores_constant.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chores_app/models/AddMember.dart';
 import 'package:chores_app/database/DatabaseHelper.dart';
@@ -42,6 +43,10 @@ class _ContactsPageState extends State<ContactsPage> {
   Future<void> getContacts() async {
     //We already have permissions for contact when we get to this page, so we
     // are now just retrieving it
+
+
+
+
     final Iterable<Contact> contacts = await ContactsService.getContacts();
     //var contactList = await ContactsService.getContacts();
     setState(() {

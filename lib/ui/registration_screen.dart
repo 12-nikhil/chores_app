@@ -32,7 +32,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         await SharedPreferences.getInstance();
         sharedPreferences.setString(SP_MOBILE, mobile);
         sharedPreferences.setString(SP_NAME, name);
-        //MyHomePage().createState().subscribeTopic(mobile.replaceAll("+", "").trim());
+        MyHomePage().createState().subscribeTopic(mobile.replaceAll("+", "").trim());
         showAlertDialog(context, MSG_TITLE_CONGRATULATION, serverResponse.message,
             serverResponse.success);
       } else {
